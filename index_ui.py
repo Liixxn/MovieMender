@@ -19,6 +19,8 @@ class Ui_MainWindow(object):
         self.centralwidget.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_9 = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout_9.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_9.setSpacing(0)
         self.gridLayout_9.setObjectName("gridLayout_9")
         self.menu = QtWidgets.QWidget(self.centralwidget)
         self.menu.setObjectName("menu")

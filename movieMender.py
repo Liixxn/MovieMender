@@ -1,7 +1,6 @@
 import sys
 
-
-
+from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.uic.properties import QtWidgets, QtGui
 
@@ -57,11 +56,11 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    # Hoja de estilos
-    # style_file = QFile("index.qss")
-    # style_file.open(QFile.ReadOnly | QFile.Text)
-    # style_stream = QTextStream(style_file)
-    # app.setStyleSheet(style_stream.readAll())
+
+    style_file = QFile("index.qss")
+    style_file.open(QFile.ReadOnly | QFile.Text)
+    style_stream = QTextStream(style_file)
+    app.setStyleSheet(style_stream.readAll())
 
     window = MainWindow()
     # Establecer un logo a la ventana

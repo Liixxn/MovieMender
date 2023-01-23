@@ -1,0 +1,10 @@
+
+    #MainWindow {
+		background-color: #fff;
+	}
+
+	#menu {
+	    background-color: #EC6433;
+
+	}
+
