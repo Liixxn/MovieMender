@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         ventanaPrincipal = self.ui
 
         ventanaPrincipal.stackedWidget.setCurrentIndex(0)
+        ventanaPrincipal.btnRecomendarPorUsuario.setChecked(True)
 
         ventanaPrincipal.btnRecomendarPorUsuario.clicked.connect(self.toogleButton)
         ventanaPrincipal.btnRecomendarPorAtributo.clicked.connect(self.toogleButton)
