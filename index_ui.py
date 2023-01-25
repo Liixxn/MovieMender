@@ -129,7 +129,7 @@ class Ui_MainWindow(object):
         self.tableViewPeliculasUser.setAlternatingRowColors(True)
         self.tableViewPeliculasUser.setObjectName("tableViewPeliculasUser")
         self.tableViewPeliculasUser.horizontalHeader().setStretchLastSection(True)
-        self.tableViewPeliculasUser.verticalHeader().setStretchLastSection(True)
+        self.tableViewPeliculasUser.verticalHeader().setStretchLastSection(False)
         self.gridLayout_4.addWidget(self.tableViewPeliculasUser, 1, 0, 1, 1)
         self.gridLayout_2.addWidget(self.widget_3, 1, 0, 1, 1)
         self.widget = QtWidgets.QWidget(self.pageRecomendacionUsuario)
@@ -377,7 +377,7 @@ class Ui_MainWindow(object):
         self.tableViewPeliculasAtributo.setAlternatingRowColors(True)
         self.tableViewPeliculasAtributo.setObjectName("tableViewPeliculasAtributo")
         self.tableViewPeliculasAtributo.horizontalHeader().setStretchLastSection(True)
-        self.tableViewPeliculasAtributo.verticalHeader().setStretchLastSection(True)
+        self.tableViewPeliculasAtributo.verticalHeader().setStretchLastSection(False)
         self.gridLayout_6.addWidget(self.tableViewPeliculasAtributo, 1, 0, 1, 1)
         self.gridLayout_7.addWidget(self.widget_7, 1, 0, 1, 1)
         self.stackedWidget.addWidget(self.pageRecomendacionAtributo)
@@ -453,7 +453,7 @@ class Ui_MainWindow(object):
         self.tableViewUserUser.setAlternatingRowColors(True)
         self.tableViewUserUser.setObjectName("tableViewUserUser")
         self.tableViewUserUser.horizontalHeader().setStretchLastSection(True)
-        self.tableViewUserUser.verticalHeader().setStretchLastSection(True)
+        self.tableViewUserUser.verticalHeader().setStretchLastSection(False)
         self.gridLayout_13.addWidget(self.tableViewUserUser, 0, 0, 1, 1)
         self.gridLayout_14.addWidget(self.widget_18, 2, 0, 1, 1)
         self.stackedWidget.addWidget(self.pageRecomendacionUserUser)
@@ -461,12 +461,12 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(3)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "ETEN"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MovieMender"))
         self.expandMenuLabel.setText(_translate("MainWindow", "Menú"))
         self.btnRecomendarPorUsuario.setText(_translate("MainWindow", "Recomendaciones por usuario"))
         self.btnRecomendarPorAtributo.setText(_translate("MainWindow", "Recomendación por atributo"))

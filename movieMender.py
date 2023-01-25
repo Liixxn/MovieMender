@@ -357,6 +357,30 @@ class MainWindow(QMainWindow):
 
                 if encontrado == True:
                     self.ui.lblPeliculaSeleccionadaUserUser.setText(titulo_pelicula)
+
+                    sparse_rating = sp.sparse.csr_matrix(self.ratings_table)
+                    similitud_usuarios = cosine_similarity(sparse_rating)
+                    # se hace con la transpuesta de la matriz creada anteriormente
+                    similitud_movies = cosine_similarity(sparse_rating.T)
+                    df_similitud_usuarios = pd.DataFrame(similitud_usuarios, index=self.ratings_table.index,
+                                                         columns=self.ratings_table.index)
+                    df_similitud_movies = pd.DataFrame(similitud_movies, index=self.ratings_table.columns,
+                                                       columns=self.ratings_table.columns)
+                    # le sumamos uno a n_similares porque la primera siempre es la propia pelicula y nos la saltamos
+                    n_similares = self.ui.comboBoxNPeliculasUserUser.currentText() + 1
+
+                    listaPeliculasRecomendadas = []
+                    for movie in df_similitud_movies[titulo_pelicula].sort_values(ascending=False).index[1:n_similares]:
+                        listaPeliculasRecomendadas.append(movie)
+
+
+                    df_peliculasRecomendadas = pd.DataFrame(columns=['Peliculas'])
+                    df_peliculasRecomendadas['Peliculas'] = listaPeliculasRecomendadas
+
+                    model = pandas_table.DataFrameModel(df_peliculasRecomendadas)
+                    self.ui.tableViewUserUser.setModel(model)
+
+
                 else:
                     self.mensaje_error("No se ha encontrado la pelicula introducida")
 
