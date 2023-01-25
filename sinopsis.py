@@ -90,6 +90,9 @@ class procesamientoTexto():
 
 
     def recomendarPeliculasSinopsis(self, titulo_pelicula, n_similares, df_peliculasConSinopsis):
+
+        n_similares = int(n_similares)
+
         # Se crea la instancia del tfidf
         tfidfvec = TfidfVectorizer()
         # Convierte el conjunto de datos en una matriz de tokens counts

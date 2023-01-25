@@ -1,30 +1,15 @@
 import sys
 from PyQt5.QtWidgets import QMessageBox
-
-import requests
 import pandas as pd
-import numpy as np
-import seaborn as sns
-from bs4 import BeautifulSoup
-import warnings
-import nltk
 #import surprise
 import scipy as sp
 
 
 from sklearn.metrics.pairwise import cosine_similarity
-from sklearn.feature_extraction.text import CountVectorizer
-from nltk.corpus import stopwords
-from nltk import word_tokenize, RegexpTokenizer
-from nltk.stem import SnowballStemmer
-from sklearn.feature_extraction.text import TfidfVectorizer
-
 from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.uic.properties import QtWidgets, QtGui
 
 from index_ui import Ui_MainWindow
-
 
 import webScraping
 import sinopsis
@@ -194,7 +179,7 @@ class MainWindow(QMainWindow):
                 if self.ui.comboBoxUsuario.currentText() in listaUsuarios:
                     self.ui.lblusuarioSeleccionado.setText(self.ui.comboBoxUsuario.currentText())
                     if self.ui.checkBoxGenerosRecomendacionUsuarios.isChecked():
-                        print("Generos")
+
                         genero = generos.Generos()
                         peliculasRecomendadas = genero.recomendacionEnBaseGeneroPelisQueNoHaVistoUsuario(
                             self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText())
@@ -206,7 +191,7 @@ class MainWindow(QMainWindow):
                         self.ui.tableViewPeliculasUser.setModel(model)
 
                     if self.ui.checkBoxTagsRecomendacionUsuarios.isChecked():
-                        print("Tags")
+
                         tag = tags.Tags()
                         peliculasRecomendadas = tag.recomedacionPorTagsUser(self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText())
                         df_listaPeliculasTags = pd.DataFrame(columns=["Peliculas"])
@@ -250,6 +235,7 @@ class MainWindow(QMainWindow):
 
                 if encontrado == True:
                     self.ui.lblPeliculaSeleccionadaAtributos.setText(titulo_pelicula)
+
                     if self.ui.checkBoxGenerosAtributos.isChecked():
 
                         genero = generos.Generos()
@@ -315,9 +301,14 @@ class MainWindow(QMainWindow):
                         self.ui.lblPeliculaSeleccionadaRating.setText(titulo_pelicula)
 
                         if self.ui.checkBoxGenerosPrediccion.isChecked():
-                            print("Generos")
+
                             genero = generos.Generos()
                             ratingPelicula = genero.predecirRatingDeUserAPeliculaPorSusGeneros(titulo_pelicula, self.ui.comboBoxUsuarioRating.currentText())
+                            if ratingPelicula == "Vacio":
+                                self.ui.lblPeliculaPrediccion.setText("No se ha podido predecir el rating para la película " + titulo_pelicula + " porque no tiene géneros")
+                            else:
+                                self.ui.lblPeliculaPrediccion.setText("La predicción para la película " + titulo_pelicula + " es: ")
+                                self.ui.lblnotaPrediccionPelicula.setText(str(ratingPelicula))
 
                         if self.ui.checkBoxSinopsisPrediccion.isChecked():
                             prediccionSinopsis = self.procesoSinopsis.predecirRatingUsuarioSinopsis(self.ui.comboBoxUsuarioRating.currentText(), self.ui.comboBoxPeliculaRating.currentText(), self.df_moviesSinopsis)
@@ -325,9 +316,16 @@ class MainWindow(QMainWindow):
                             self.ui.lblnotaPrediccionPelicula.setText(str(prediccionSinopsis))
 
                         if self.ui.checkBoxTagsPrediccion.isChecked():
-                            print("Tags")
+
                             tag = tags.Tags()
                             ratingPelicula = tag.predecirRatingDeUserAPeliculaPorSusTags(titulo_pelicula, self.ui.comboBoxUsuarioRating.currentText())
+                            if ratingPelicula == "Vacio":
+                                self.ui.lblPeliculaPrediccion.setText(
+                                    "No se ha podido predecir el rating para la película " + titulo_pelicula + " porque no tiene géneros")
+                            else:
+                                self.ui.lblPeliculaPrediccion.setText(
+                                    "La predicción para la película " + titulo_pelicula + " es: ")
+                                self.ui.lblnotaPrediccionPelicula.setText(str(ratingPelicula))
 
                     else:
                        self.mensaje_error("No se ha encontrado la pelicula introducida")
@@ -367,7 +365,8 @@ class MainWindow(QMainWindow):
                     df_similitud_movies = pd.DataFrame(similitud_movies, index=self.ratings_table.columns,
                                                        columns=self.ratings_table.columns)
                     # le sumamos uno a n_similares porque la primera siempre es la propia pelicula y nos la saltamos
-                    n_similares = self.ui.comboBoxNPeliculasUserUser.currentText() + 1
+                    n_similares = int(self.ui.comboBoxNPeliculasUserUser.currentText())
+                    n_similares +=1
 
                     listaPeliculasRecomendadas = []
                     for movie in df_similitud_movies[titulo_pelicula].sort_values(ascending=False).index[1:n_similares]:

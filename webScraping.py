@@ -23,7 +23,7 @@ class extraccionSinopsisPeliculas():
 
         self.df_links['tmdbId'] = self.df_links['tmdbId'].fillna(0)
         for idPeli in self.df_links['tmdbId']:
-            #print(idPeli)
+
             if idPeli != 0:
                 try:
                     url = "https://www.themoviedb.org/movie/" + str(int(idPeli))

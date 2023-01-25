@@ -9,9 +9,11 @@
 	}
 	#btnRecomendarPorUsuario, #btnRecomendarPorAtributo, #btnPrediccionRating, #btnRecomendarUserUser {
         background-color: #EC6433;
-        color: #0000;
+        color: black;
         border: none;
         padding-top: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
 	}
 
 	#btnRecomendarPorUsuario:hover, #btnRecomendarPorAtributo:hover, #btnPrediccionRating:hover, #btnRecomendarUserUser:hover {
