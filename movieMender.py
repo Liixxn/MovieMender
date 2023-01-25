@@ -28,7 +28,7 @@ from index_ui import Ui_MainWindow
 
 import webScraping
 import generos
-
+import tags
 
 
 
@@ -179,6 +179,8 @@ class MainWindow(QMainWindow):
                         peliculasRecomendadas = genero.recomendacionEnBaseGeneroPelisQueNoHaVistoUsuario(self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText())
                     if self.ui.checkBoxTagsRecomendacionUsuarios.isChecked():
                         print("Tags")
+                        tag = tags.Tags()
+                        peliculasRecomendadas = tag.recomedacionPorTagsUser(self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText())
                     if self.ui.checkBoxSinopsisRecomendacionUsuarios.isChecked():
                         print("Sinopsis")
                 else:
@@ -207,8 +209,16 @@ class MainWindow(QMainWindow):
 
                 if encontrado == True:
                     self.ui.lblPeliculaSeleccionadaAtributos.setText(titulo_pelicula)
-                    genero = generos.Generos()
-                    peliculasRecomendadas = genero.recomedacionPorGenero(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
+                    if self.ui.checkBoxGenerosAtributos.isChecked():
+                        print("Generos")
+                        genero = generos.Generos()
+                        peliculasRecomendadas = genero.recomedacionPorGenero(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
+                    if self.ui.checkBoxTagsAtributos.isChecked():
+                        print("Tags")
+                        tag = tags.Tags()
+                        peliculasRecomendadas = tag.recomedacionPorTags(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
+                    if self.ui.checkBoxSinopsisAtributos.isChecked():
+                        print("Sinopsis")
                 else:
                     self.mensaje_error("No se ha encontrado la pelicula introducida")
 
@@ -246,11 +256,12 @@ class MainWindow(QMainWindow):
                             print("Generos")
                             genero = generos.Generos()
                             ratingPelicula = genero.predecirRatingDeUserAPeliculaPorSusGeneros(titulo_pelicula, self.ui.comboBoxUsuarioRating.currentText())
-                            print(ratingPelicula)
                         if self.ui.checkBoxSinopsisPrediccion.isChecked():
                             print("Sinopsis")
                         if self.ui.checkBoxTagsPrediccion.isChecked():
                             print("Tags")
+                            tag = tags.Tags()
+                            ratingPelicula = tag.predecirRatingDeUserAPeliculaPorSusTags(titulo_pelicula, self.ui.comboBoxUsuarioRating.currentText())
 
                     else:
                        self.mensaje_error("No se ha encontrado la pelicula introducida")

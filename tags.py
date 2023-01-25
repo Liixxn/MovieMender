@@ -17,7 +17,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 
-class tags():
+class Tags():
 
     def __init__(self):
          self.cargaDocumentos()
@@ -46,79 +46,99 @@ class tags():
 
 
     def recomedacionPorTags(self, nombrePelicula, n_similares):
-            count_matrix = self.df_movies_ratings_tags.pivot_table(index='movieId', columns='tag', values='userId')
-            #count_matrix = self.df_movies_ratings_tags.pivot_table(index='movieId', columns='tag', values='rating')
-            count_matrix.fillna(0, inplace=True)
-            sparse_rating = sp.sparse.csr_matrix(count_matrix)
-            #print(sparse_rating)    
-            selected_movie = self.df_movies[self.df_movies["title"] == nombrePelicula]["movieId"].values[0]
-            #print(selected_movie)
+        n_similares=int(n_similares)
+        count_matrix = self.df_movies_ratings_tags.pivot_table(index='movieId', columns='tag', values='userId')
+        #count_matrix = self.df_movies_ratings_tags.pivot_table(index='movieId', columns='tag', values='rating')
+        count_matrix.fillna(0, inplace=True)
+        sparse_rating = sp.sparse.csr_matrix(count_matrix)
+        #print(sparse_rating)    
+        selected_movie = self.df_movies[self.df_movies["title"] == nombrePelicula]["movieId"].values[0]
+        #print(selected_movie)
 
-            #encontramos el id de la pelicula en la matriz
-            selected_movie_index = count_matrix.index.get_loc(selected_movie)
+        #encontramos el id de la pelicula en la matriz
+        selected_movie_index = count_matrix.index.get_loc(selected_movie)
 
-            similarities = cosine_similarity(sparse_rating, sparse_rating[selected_movie_index])
+        similarities = cosine_similarity(sparse_rating, sparse_rating[selected_movie_index])
 
-            movie_list = [(index, similarity) for index, similarity in enumerate(similarities)]
-            movie_list.sort(key=lambda x: x[1], reverse=True)
-            
-            print('Peliculas similares a ' + nombrePelicula + ':')
-            print()
-            bandera=False
-            contador = 1
-            for movie in movie_list[0:n_similares]:
-                if(nombrePelicula != self.df_movies.iloc[movie[0]]["title"]):
-                    print(str(contador)+' - ' +self.df_movies.iloc[movie[0]]["title"])
-                    contador+=1
-                else:
-                    bandera=True
-            if(bandera):
-                mov=movie_list[n_similares][0]
-                print(str(contador)+' - ' +self.df_movies.iloc[mov]["title"])
+        movie_list = [(index, similarity) for index, similarity in enumerate(similarities)]
+        movie_list.sort(key=lambda x: x[1], reverse=True)
+        
+        print('Peliculas similares a ' + nombrePelicula + ':')
+        print()
+        bandera=False
+        listaPeliculasMostrar = []
+        contador = 1
+        for movie in movie_list[0:n_similares]:
+            if(nombrePelicula != self.df_movies.iloc[movie[0]]["title"]):
+                print(str(contador)+' - ' +self.df_movies.iloc[movie[0]]["title"])
+                listaPeliculasMostrar.append(self.df_movies.iloc[movie[0]]["title"])
+                contador+=1
+            else:
+                bandera=True
+        if(bandera):
+            mov=movie_list[n_similares][0]
+            print(str(contador)+' - ' +self.df_movies.iloc[mov]["title"])
+            listaPeliculasMostrar.append(self.df_movies.iloc[mov]["title"])
+        return listaPeliculasMostrar
                 
     def predecirRatingDeUserAPeliculaPorSusTags(self, nombrePelicula, user_id):
-            yaVotado = self.df_movies_ratings[(self.df_movies_ratings['title']==nombrePelicula) & (self.df_movies_ratings['userId']==user_id)]["rating"].unique()
-            if(len(yaVotado)!=0):
-                prediction = yaVotado[0]
-                #print()
-                print("La prediccion para " + nombrePelicula+" es: " + str(prediction))
-                return prediction
+        user_id=int(user_id)
+        yaVotado = self.df_movies_ratings[(self.df_movies_ratings['title']==nombrePelicula) & (self.df_movies_ratings['userId']==user_id)]["rating"].unique()
+        if(len(yaVotado)!=0):
+            prediction = yaVotado[0]
+            #print()
+            print("La prediccion para " + nombrePelicula+" es: " + str(prediction))
+            return "La prediccion para " + nombrePelicula+" es: " + str(prediction)
+        else:
+            # obtener tags de la película a predecir
+            tagsPeli = []
+            movie_tags = self.df_movies_ratings_tags[self.df_movies_ratings_tags['title']==nombrePelicula]["tag"].unique()
+            for m in movie_tags:
+                tagsPeli.append(m)
+            #print(tagsPeli)
+            filtroMergeandoTags = self.df_movies_ratings_tags[['userId','movieId','title', 'rating', 'tag']]
+            filtroEnBaseUserId = filtroMergeandoTags[filtroMergeandoTags['userId']==user_id]
+            
+            #similitud = [distance.cosine(tagsPeli, j['tag']) for i,j in filtroEnBaseUserId.iterrows()]
+            
+            user_ratings = filtroEnBaseUserId[filtroEnBaseUserId['tag'].isin(tagsPeli)]
+            #si el usuario a creado un tag de alguna peli que sea igual a alguno de el de la pelicula buscada filtramos mas el df quitando los nulos
+            #si no a hecho ningun tag y todos sus tag son nan dejamos el df como esta ya que si hacemos dropna eliminamos el df entero
+            if user_ratings.dropna().size != 0:
+                user_ratings = user_ratings.dropna()
+            user_ratings
+            # calcular la media de valoraciones del usuario para las peliculas con generos en comun
+            if user_ratings.empty:
+                print("La lista es empty")
+                return "Vacia"
             else:
-                # obtener tags de la película a predecir
-                tagsPeli = []
-                movie_tags = self.df_movies_ratings_tags[self.df_movies_ratings_tags['title']==nombrePelicula]["tag"].unique()
-                for m in movie_tags:
-                    tagsPeli.append(m)
-                #print(tagsPeli)
-                filtroMergeandoTags = self.df_movies_ratings_tags[['userId','movieId','title', 'rating', 'tag']]
-                filtroEnBaseUserId = filtroMergeandoTags[filtroMergeandoTags['userId']==user_id]
-                
-                #similitud = [distance.cosine(tagsPeli, j['tag']) for i,j in filtroEnBaseUserId.iterrows()]
-                
-                user_ratings = filtroEnBaseUserId[filtroEnBaseUserId['tag'].isin(tagsPeli)]
-                #si el usuario a creado un tag de alguna peli que sea igual a alguno de el de la pelicula buscada filtramos mas el df quitando los nulos
-                #si no a hecho ningun tag y todos sus tag son nan dejamos el df como esta ya que si hacemos dropna eliminamos el df entero
-                if user_ratings.dropna().size != 0:
-                    user_ratings = user_ratings.dropna()
-                user_ratings
-                # calcular la media de valoraciones del usuario para las peliculas con generos en comun
-                if user_ratings.empty:
-                    print("La lista es empty")
-                    return None
-                else:
-                    #prediction = user_ratings_ID['rating'].mean()
-                    prediction = format(user_ratings['rating'].mean(), '.3f')
-                    #print()
-                    print("La prediccion para " + nombrePelicula + " es: " + str(prediction))
-                    return prediction
+                #prediction = user_ratings_ID['rating'].mean()
+                prediction = format(user_ratings['rating'].mean(), '.3f')
+                #print()
+                print("La prediccion para " + nombrePelicula + " es: " + str(prediction))
+                return "La prediccion para " + nombrePelicula + " es: " + str(prediction)
 
 
-    def recomedacionPorTagsUser(self, nombrePelicula, user_id):
-        df_movies_rating_user = tags.df_movies_ratings[tags.df_movies_ratings['userId']==user_id]
-        tags.df_movies[~tags.df_movies.movieId.isin(df_movies_rating_user["movieId"])]
+    def recomedacionPorTagsUser(self, user_id, n_similares):
+        user_id=int(user_id)
+        n_similares=int(n_similares)
+        df_movies_rating_user = self.df_movies_ratings[self.df_movies_ratings['userId']==user_id]
+        self.df_movies[~self.df_movies.movieId.isin(df_movies_rating_user["movieId"])]
         df = pd.DataFrame()
-        movies = tags.df_movies[~tags.df_movies.movieId.isin(df_movies_rating_user["movieId"])]
+        movies = self.df_movies[~self.df_movies.movieId.isin(df_movies_rating_user["movieId"])]
         df["movieId"] = movies["movieId"]
         df["title"] = movies["title"]
-        df["ratingPredict"] = [tags.predecirRatingDeUserAPeliculaPorSusTags(j["title"], user_id) for i,j in df.iterrows()]
+        df["ratingPredict"] = [self.predecirRatingDeUserAPeliculaPorSusTags(j["title"], user_id) for i,j in df.iterrows()]
         df = df.sort_values(by='ratingPredict', ascending = False)
+        
+        #desde aqui falla
+        df_resultados = df["title"].head(n_similares)
+        print(type(df_resultados))
+        listaPeliculasRecomendadas = []
+        #print(df_resultados.iloc[:,1])
+        for i in range(len(df_resultados)):
+            listaPeliculasRecomendadas.append(df_resultados.iloc[i,1])
+            print(df_resultados.iloc[i,1])
+
+
+        return listaPeliculasRecomendadas

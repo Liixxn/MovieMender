@@ -76,7 +76,7 @@ class Generos:
         bandera=False
         for movie in movie_list[0:n_similares]:
             if(nombrePelicula != self.df_movies.iloc[movie[0]]["title"]):
-                #print(str(contador)+' - ' +self.df_movies.iloc[movie[0]]["title"])
+                print(str(contador)+' - ' +self.df_movies.iloc[movie[0]]["title"])
                 listaPeliculasMostrar.append(self.df_movies.iloc[movie[0]]["title"])
                 contador+=1
             else:
@@ -84,7 +84,7 @@ class Generos:
         if(bandera):
             #print('bandera')
             mov=movie_list[n_similares][0]
-            #print(str(contador)+' - ' +self.df_movies.iloc[mov]["title"])
+            print(str(contador)+' - ' +self.df_movies.iloc[mov]["title"])
             listaPeliculasMostrar.append(self.df_movies.iloc[mov]["title"])
         return listaPeliculasMostrar
                 
@@ -94,7 +94,7 @@ class Generos:
         if(len(yaVotado)!=0):
             prediction = yaVotado[0]
             #print()
-            #print("La prediccion para " + nombrePelicula+" es: " + str(prediction))
+            print("La prediccion para " + nombrePelicula+" es: " + str(prediction))
             return "La prediccion para " + nombrePelicula + " es: " + str(prediction)
             #return prediction
         else:
@@ -106,13 +106,13 @@ class Generos:
             user_ratings = user_ratings_ID.loc[user_ratings_ID['genres'].str.split('|').apply(lambda x: any(i in x for i in generosPeli))]
             # calcular la media de valoraciones del usuario para las peliculas con generos en comun
             if user_ratings.empty:
-                #print("La lista es empty")
+                print("La lista es empty")
                 return "Vacio"
             else:
                 #prediction = user_ratings_ID['rating'].mean()
                 prediction = format(user_ratings['rating'].mean(), '.3f')
                 #print()
-                #print("La prediccion para " + nombrePelicula + " es: " + str(prediction))
+                print("La prediccion para " + nombrePelicula + " es: " + str(prediction))
                 return "La prediccion para " + nombrePelicula + " es: " + str(prediction)
 
     def recomendacionEnBaseGeneroPelisQueNoHaVistoUsuario(self, user_id, n_similares):
@@ -149,7 +149,7 @@ class Generos:
         listaPeliculasMostrar = []
         contador = 1
         for movie in df_peliculas_mostrar:
-            #print(str(contador)+' - ' +movie)
+            print(str(contador)+' - ' +movie)
             listaPeliculasMostrar.append(movie)
             contador+=1
         return listaPeliculasMostrar
