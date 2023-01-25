@@ -183,7 +183,7 @@ class MainWindow(QMainWindow):
 
     ####################################################################################################
 
-
+    # Funcion que recomienda N peliculas que no ha visto el usuario en base a sus atributos
     def recomendarNPeliculasPorUsuario(self):
 
         if self.ui.comboBoxUsuario.currentText() != "" and self.ui.comboBoxRecomendacionUsuarios.currentText() != "" and (self.ui.checkBoxGenerosRecomendacionUsuarios.isChecked() or self.ui.checkBoxTagsRecomendacionUsuarios.isChecked() or self.ui.checkBoxSinopsisRecomendacionUsuarios.isChecked()):
@@ -233,7 +233,7 @@ class MainWindow(QMainWindow):
 
 
 
-
+    # Funcin que recomienda N peliculas en base a los atributos de esta
     def recomendarNPeliculasPorAtributos(self):
 
         if self.ui.comboBoxPeliculaAtributos.currentText() != "" and self.ui.comboBoxNPeliculasAtributos.currentText() != "" and (self.ui.checkBoxGenerosAtributos.isChecked() or self.ui.checkBoxTagsAtributos.isChecked() or self.ui.checkBoxSinopsisAtributos.isChecked()):
@@ -251,15 +251,36 @@ class MainWindow(QMainWindow):
                 if encontrado == True:
                     self.ui.lblPeliculaSeleccionadaAtributos.setText(titulo_pelicula)
                     if self.ui.checkBoxGenerosAtributos.isChecked():
-                        print("Generos")
+
                         genero = generos.Generos()
                         peliculasRecomendadas = genero.recomedacionPorGenero(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
+
+                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
+                        df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadas
+
+                        model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
+                        self.ui.tableViewPeliculasUser.setModel(model)
+
                     if self.ui.checkBoxTagsAtributos.isChecked():
-                        print("Tags")
+
                         tag = tags.Tags()
                         peliculasRecomendadas = tag.recomedacionPorTags(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
+
+                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
+                        df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadas
+
+                        model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
+                        self.ui.tableViewPeliculasUser.setModel(model)
+
                     if self.ui.checkBoxSinopsisAtributos.isChecked():
-                        print("Sinopsis")
+
+                        peliculasRecomendadasSinopsis = self.procesoSinopsis.recomendarPeliculasSinopsis(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText(), self.df_moviesSinopsis)
+                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
+                        df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadasSinopsis
+
+                        model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
+                        self.ui.tableViewPeliculasUser.setModel(model)
+
                 else:
                     self.mensaje_error("No se ha encontrado la pelicula introducida")
 
@@ -269,7 +290,7 @@ class MainWindow(QMainWindow):
             self.mensaje_error("Rellene los campos necesarios")
 
 
-
+    # Funcoon que predice la nota para una pelicula dada en base a los atributos seleccionados
     def predecirRatingPelicula(self):
 
         if self.ui.comboBoxUsuarioRating.currentText() != "" and self.ui.comboBoxPeliculaRating.currentText() != "" and (self.ui.checkBoxGenerosPrediccion.isChecked() or self.ui.checkBoxTagsPrediccion.isChecked() or self.ui.checkBoxSinopsisPrediccion.isChecked()):
@@ -297,10 +318,12 @@ class MainWindow(QMainWindow):
                             print("Generos")
                             genero = generos.Generos()
                             ratingPelicula = genero.predecirRatingDeUserAPeliculaPorSusGeneros(titulo_pelicula, self.ui.comboBoxUsuarioRating.currentText())
+
                         if self.ui.checkBoxSinopsisPrediccion.isChecked():
                             prediccionSinopsis = self.procesoSinopsis.predecirRatingUsuarioSinopsis(self.ui.comboBoxUsuarioRating.currentText(), self.ui.comboBoxPeliculaRating.currentText(), self.df_moviesSinopsis)
                             self.ui.lblPeliculaPrediccion.setText("La predicción para la película " + titulo_pelicula + " es: ")
                             self.ui.lblnotaPrediccionPelicula.setText(str(prediccionSinopsis))
+
                         if self.ui.checkBoxTagsPrediccion.isChecked():
                             print("Tags")
                             tag = tags.Tags()
@@ -317,7 +340,7 @@ class MainWindow(QMainWindow):
 
 
 
-
+    # Función que recomienda películas a un usuario basandose en otros usuarios
     def recomendarNPeliculasUserUser(self):
 
         if self.ui.comboBoxPeliculaUserUser.currentText()!="" and self.ui.comboBoxNPeliculasUserUser.currentText()!="":

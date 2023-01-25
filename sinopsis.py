@@ -1,5 +1,6 @@
 import nltk
 import pandas as pd
+from PyQt5.QtWidgets import QMessageBox
 from nltk.corpus import stopwords
 from nltk import word_tokenize, RegexpTokenizer
 from nltk.stem import SnowballStemmer
@@ -7,7 +8,18 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
+def mensaje_error(self, mensaje):
+    QMessageBox.critical(
+        self,
+        "Error",
+        mensaje,
+        buttons=QMessageBox.Discard,
+        defaultButton=QMessageBox.Discard,
+    )
+
+
 class procesamientoTexto():
+
 
     # Funcion que pasa a minusculas y elimina los signos de puntuacion
     def tratamientoBasico(self, df_sinTratar):
@@ -74,6 +86,9 @@ class procesamientoTexto():
 
         return df_peliculasConSinopsis
 
+
+
+
     def recomendarPeliculasSinopsis(self, titulo_pelicula, n_similares, df_peliculasConSinopsis):
         # Se crea la instancia del tfidf
         tfidfvec = TfidfVectorizer()
@@ -93,15 +108,16 @@ class procesamientoTexto():
         similarity_scores = pd.Series(cos_sim[selected_movie_index]).sort_values(ascending=False)
         # Se escogen el numero de peliculas especificadas
         numero_peliculas = list(similarity_scores.iloc[1:n_similares + 1].index)
-        print("Tu top", str(n_similares) + " de peliculas parecidas a " + titulo_pelicula + ":")
-        print("")
-        contador = 1
+
         for i in numero_peliculas:
             # Se aniaden a la lista de peliculas recomendadas
-            recommended_movies.append(list(df_peliculasConSinopsis.index)[i])
-            print(str(contador) + " - " + df_peliculasConSinopsis.loc[i]["title"])
-            contador += 1
-        # return recommended_movies
+            recommended_movies.append(df_peliculasConSinopsis.loc[i]["title"])
+
+
+        return recommended_movies
+
+
+
 
     def predecirRatingUsuarioSinopsis(self, user_id, titulo_pelicula, df_peliculasConSinopsis):
 
@@ -158,7 +174,7 @@ class procesamientoTexto():
                 return str(prediction)
 
         else:
-            print("La pelicula que desea predecir no contiene una sinopsis en que basarse")
+            mensaje_error("La pelicula que desea predecir no contiene una sinopsis en que basarse")
 
 
     def recomendarNPeliculasNoVistasSinopsis(self, user_id, n_peliculas, df_peliculasConSinopsis):
