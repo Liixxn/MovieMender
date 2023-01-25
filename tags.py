@@ -5,7 +5,7 @@ import seaborn as sns
 from bs4 import BeautifulSoup
 import warnings
 import nltk
-import surprise
+#import surprise
 import scipy as sp
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import CountVectorizer
@@ -130,15 +130,13 @@ class Tags():
         df["title"] = movies["title"]
         df["ratingPredict"] = [self.predecirRatingDeUserAPeliculaPorSusTags(j["title"], user_id) for i,j in df.iterrows()]
         df = df.sort_values(by='ratingPredict', ascending = False)
-        
-        #desde aqui falla
+
         df_resultados = df["title"].head(n_similares)
-        print(type(df_resultados))
+
         listaPeliculasRecomendadas = []
-        #print(df_resultados.iloc[:,1])
-        for i in range(len(df_resultados)):
-            listaPeliculasRecomendadas.append(df_resultados.iloc[i,1])
-            print(df_resultados.iloc[i,1])
+
+        for i in df_resultados:
+            listaPeliculasRecomendadas.append(i)
 
 
         return listaPeliculasRecomendadas

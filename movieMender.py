@@ -198,10 +198,23 @@ class MainWindow(QMainWindow):
                         genero = generos.Generos()
                         peliculasRecomendadas = genero.recomendacionEnBaseGeneroPelisQueNoHaVistoUsuario(
                             self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText())
+
+                        df_listaPeliculasGeneros = pd.DataFrame(columns=["Peliculas"])
+                        df_listaPeliculasGeneros["Peliculas"] = peliculasRecomendadas
+
+                        model = pandas_table.DataFrameModel(df_listaPeliculasGeneros)
+                        self.ui.tableViewPeliculasUser.setModel(model)
+
                     if self.ui.checkBoxTagsRecomendacionUsuarios.isChecked():
                         print("Tags")
                         tag = tags.Tags()
                         peliculasRecomendadas = tag.recomedacionPorTagsUser(self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText())
+                        df_listaPeliculasTags = pd.DataFrame(columns=["Peliculas"])
+                        df_listaPeliculasTags["Peliculas"] = peliculasRecomendadas
+
+                        model = pandas_table.DataFrameModel(df_listaPeliculasTags)
+                        self.ui.tableViewPeliculasUser.setModel(model)
+
                     if self.ui.checkBoxSinopsisRecomendacionUsuarios.isChecked():
 
                         listaPeliculasSinopsis = []

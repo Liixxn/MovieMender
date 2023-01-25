@@ -5,7 +5,7 @@ import seaborn as sns
 from bs4 import BeautifulSoup
 import warnings
 import nltk
-import surprise
+#import surprise
 import scipy as sp
 
 
