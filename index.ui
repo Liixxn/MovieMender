@@ -174,7 +174,7 @@
     <item row="0" column="1">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="pageRecomendacionUsuario">
        <layout class="QGridLayout" name="gridLayout_2">
@@ -270,7 +270,17 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QTableView" name="tableViewPeliculasUser"/>
+            <widget class="QTableView" name="tableViewPeliculasUser">
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -839,7 +849,17 @@
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QTableView" name="tableViewPeliculasAtributo"/>
+            <widget class="QTableView" name="tableViewPeliculasAtributo">
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -1001,7 +1021,17 @@
          <widget class="QWidget" name="widget_18" native="true">
           <layout class="QGridLayout" name="gridLayout_13">
            <item row="0" column="0">
-            <widget class="QTableView" name="tableViewUserUser"/>
+            <widget class="QTableView" name="tableViewUserUser">
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+            </widget>
            </item>
           </layout>
          </widget>

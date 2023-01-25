@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\lemba\PycharmProjects\MovieMender\index.ui'
+# Form implementation generated from reading ui file 'C:\Users\lemba\Documents\GitHub\MovieLens-recomendador\index.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.2
 #
@@ -126,7 +126,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.addLayout(self.horizontalLayout_5)
         self.gridLayout_4.addWidget(self.widget_2, 0, 0, 1, 1)
         self.tableViewPeliculasUser = QtWidgets.QTableView(self.widget_3)
+        self.tableViewPeliculasUser.setAlternatingRowColors(True)
         self.tableViewPeliculasUser.setObjectName("tableViewPeliculasUser")
+        self.tableViewPeliculasUser.horizontalHeader().setStretchLastSection(True)
+        self.tableViewPeliculasUser.verticalHeader().setStretchLastSection(True)
         self.gridLayout_4.addWidget(self.tableViewPeliculasUser, 1, 0, 1, 1)
         self.gridLayout_2.addWidget(self.widget_3, 1, 0, 1, 1)
         self.widget = QtWidgets.QWidget(self.pageRecomendacionUsuario)
@@ -371,7 +374,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addLayout(self.horizontalLayout_11)
         self.gridLayout_6.addWidget(self.widget_8, 0, 0, 1, 1)
         self.tableViewPeliculasAtributo = QtWidgets.QTableView(self.widget_7)
+        self.tableViewPeliculasAtributo.setAlternatingRowColors(True)
         self.tableViewPeliculasAtributo.setObjectName("tableViewPeliculasAtributo")
+        self.tableViewPeliculasAtributo.horizontalHeader().setStretchLastSection(True)
+        self.tableViewPeliculasAtributo.verticalHeader().setStretchLastSection(True)
         self.gridLayout_6.addWidget(self.tableViewPeliculasAtributo, 1, 0, 1, 1)
         self.gridLayout_7.addWidget(self.widget_7, 1, 0, 1, 1)
         self.stackedWidget.addWidget(self.pageRecomendacionAtributo)
@@ -444,7 +450,10 @@ class Ui_MainWindow(object):
         self.gridLayout_13 = QtWidgets.QGridLayout(self.widget_18)
         self.gridLayout_13.setObjectName("gridLayout_13")
         self.tableViewUserUser = QtWidgets.QTableView(self.widget_18)
+        self.tableViewUserUser.setAlternatingRowColors(True)
         self.tableViewUserUser.setObjectName("tableViewUserUser")
+        self.tableViewUserUser.horizontalHeader().setStretchLastSection(True)
+        self.tableViewUserUser.verticalHeader().setStretchLastSection(True)
         self.gridLayout_13.addWidget(self.tableViewUserUser, 0, 0, 1, 1)
         self.gridLayout_14.addWidget(self.widget_18, 2, 0, 1, 1)
         self.stackedWidget.addWidget(self.pageRecomendacionUserUser)
@@ -452,7 +461,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

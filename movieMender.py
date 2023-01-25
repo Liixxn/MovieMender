@@ -259,7 +259,7 @@ class MainWindow(QMainWindow):
                         df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadas
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
-                        self.ui.tableViewPeliculasUser.setModel(model)
+                        self.ui.tableViewPeliculasAtributo.setModel(model)
 
                     if self.ui.checkBoxTagsAtributos.isChecked():
 
@@ -270,7 +270,7 @@ class MainWindow(QMainWindow):
                         df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadas
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
-                        self.ui.tableViewPeliculasUser.setModel(model)
+                        self.ui.tableViewPeliculasAtributo.setModel(model)
 
                     if self.ui.checkBoxSinopsisAtributos.isChecked():
 
@@ -279,7 +279,7 @@ class MainWindow(QMainWindow):
                         df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadasSinopsis
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
-                        self.ui.tableViewPeliculasUser.setModel(model)
+                        self.ui.tableViewPeliculasAtributo.setModel(model)
 
                 else:
                     self.mensaje_error("No se ha encontrado la pelicula introducida")
