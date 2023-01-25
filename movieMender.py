@@ -135,8 +135,8 @@ class MainWindow(QMainWindow):
         self.df_tags = pd.read_csv('csv/tags.csv')
         self.df_tags = self.df_tags.dropna()
 
+        #self.df_ratings = pd.concat([self.df_usuaarioO, self.df_ratings], axis=0)
 
-        self.df_ratings = pd.concat([self.df_usuaarioO, self.df_ratings], axis=0)
 
         self.df_movies_ratings = self.df_ratings.merge(self.df_movies)[
             ['userId', 'movieId', 'title', 'rating', 'genres']]
@@ -214,6 +214,7 @@ class MainWindow(QMainWindow):
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasGeneros)
                         self.ui.tableViewPeliculasUser.setModel(model)
+
                         self.ui.tableViewPeliculasUser.clicked.connect(self.mirarPelisPorUsuario)
 
                     if self.ui.checkBoxTagsRecomendacionUsuarios.isChecked():
@@ -401,32 +402,36 @@ class MainWindow(QMainWindow):
                         contador +=1
 
                 if encontrado == True:
-                    self.ui.lblPeliculaSeleccionadaUserUser.setText(titulo_pelicula)
+                    try:
+                        self.ui.lblPeliculaSeleccionadaUserUser.setText(titulo_pelicula)
 
-                    sparse_rating = sp.sparse.csr_matrix(self.ratings_table)
-                    similitud_usuarios = cosine_similarity(sparse_rating)
-                    # se hace con la transpuesta de la matriz creada anteriormente
-                    similitud_movies = cosine_similarity(sparse_rating.T)
-                    df_similitud_usuarios = pd.DataFrame(similitud_usuarios, index=self.ratings_table.index,
-                                                         columns=self.ratings_table.index)
-                    df_similitud_movies = pd.DataFrame(similitud_movies, index=self.ratings_table.columns,
-                                                       columns=self.ratings_table.columns)
-                    # le sumamos uno a n_similares porque la primera siempre es la propia pelicula y nos la saltamos
-                    n_similares = int(self.ui.comboBoxNPeliculasUserUser.currentText())
-                    n_similares +=1
-
-                    listaPeliculasRecomendadas = []
-                    for movie in df_similitud_movies[titulo_pelicula].sort_values(ascending=False).index[1:n_similares]:
-                        listaPeliculasRecomendadas.append(movie)
+                        sparse_rating = sp.sparse.csr_matrix(self.ratings_table)
+                        similitud_usuarios = cosine_similarity(sparse_rating)
+                        # se hace con la transpuesta de la matriz creada anteriormente
+                        similitud_movies = cosine_similarity(sparse_rating.T)
+                        df_similitud_usuarios = pd.DataFrame(similitud_usuarios, index=self.ratings_table.index,
+                                                             columns=self.ratings_table.index)
+                        df_similitud_movies = pd.DataFrame(similitud_movies, index=self.ratings_table.columns,
+                                                           columns=self.ratings_table.columns)
 
 
-                    df_peliculasRecomendadas = pd.DataFrame(columns=['Peliculas'])
-                    df_peliculasRecomendadas['Peliculas'] = listaPeliculasRecomendadas
+                        # le sumamos uno a n_similares porque la primera siempre es la propia pelicula y nos la saltamos
+                        n_similares = int(self.ui.comboBoxNPeliculasUserUser.currentText())
+                        n_similares += 1
 
-                    model = pandas_table.DataFrameModel(df_peliculasRecomendadas)
-                    self.ui.tableViewUserUser.setModel(model)
-                    self.ui.tableViewUserUser.clicked.connect(self.mirarPelisUserUser)
+                        listaPeliculasRecomendadas = []
+                        for movie in df_similitud_movies[titulo_pelicula].sort_values(ascending=False).index[1:n_similares]:
+                            listaPeliculasRecomendadas.append(movie)
 
+
+                        df_peliculasRecomendadas = pd.DataFrame(columns=['Peliculas'])
+                        df_peliculasRecomendadas['Peliculas'] = listaPeliculasRecomendadas
+
+                        model = pandas_table.DataFrameModel(df_peliculasRecomendadas)
+                        self.ui.tableViewUserUser.setModel(model)
+                        self.ui.tableViewUserUser.clicked.connect(self.mirarPelisUserUser)
+                    except Exception as e:
+                        print(e)
 
                 else:
                     self.mensaje_error("No se ha encontrado la pelicula introducida")
