@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMessageBox
 import pandas as pd
 #import surprise
 import scipy as sp
+import webbrowser
 
 
 from sklearn.metrics.pairwise import cosine_similarity
@@ -10,6 +11,7 @@ from PyQt5.QtCore import QFile, QTextStream
 from PyQt5.QtWidgets import QMainWindow, QApplication
 
 from index_ui import Ui_MainWindow
+
 
 import webScraping
 import sinopsis
@@ -118,7 +120,8 @@ class MainWindow(QMainWindow):
 
 
 
-
+        self.df_links = pd.read_csv('csv/links.csv')
+        self.df_links = self.df_links.dropna()
         self.df_movies = self.df_movies.dropna()
         self.df_ratings = pd.read_csv('csv/ratings.csv')
         self.df_ratings = self.df_ratings.dropna()
@@ -168,6 +171,17 @@ class MainWindow(QMainWindow):
 
     ####################################################################################################
 
+
+    def mirarPelisPorUsuario(self):
+        index = self.ui.tableViewPeliculasUser.selectedIndexes()[0]
+        print(index)
+        peli = index.data()
+        
+        idPeli = self.df_movies[self.df_movies["title"] == peli]["movieId"]
+        idPeliBuscador = str(int(self.df_links[self.df_links["movieId"]==int(idPeli)]["tmdbId"]))
+        webbrowser.open("www.themoviedb.org/movie/" + idPeliBuscador)
+
+
     # Funcion que recomienda N peliculas que no ha visto el usuario en base a sus atributos
     def recomendarNPeliculasPorUsuario(self):
 
@@ -189,6 +203,7 @@ class MainWindow(QMainWindow):
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasGeneros)
                         self.ui.tableViewPeliculasUser.setModel(model)
+                        self.ui.tableViewPeliculasUser.clicked.connect(self.mirarPelisPorUsuario)
 
                     if self.ui.checkBoxTagsRecomendacionUsuarios.isChecked():
 
@@ -199,6 +214,7 @@ class MainWindow(QMainWindow):
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasTags)
                         self.ui.tableViewPeliculasUser.setModel(model)
+                        self.ui.tableViewPeliculasUser.clicked.connect(self.mirarPelisPorUsuario)
 
                     if self.ui.checkBoxSinopsisRecomendacionUsuarios.isChecked():
 
@@ -209,6 +225,7 @@ class MainWindow(QMainWindow):
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
                         self.ui.tableViewPeliculasUser.setModel(model)
+                        self.ui.tableViewPeliculasUser.clicked.connect(self.mirarPelisPorUsuario)
                 else:
                     self.mensaje_error("El usuario introducido no existe")
             else:
@@ -217,6 +234,14 @@ class MainWindow(QMainWindow):
             self.mensaje_error("Rellene los campos necesarios")
 
 
+
+    def mirarPelisPorAtributos(self):
+        index = self.ui.tableViewPeliculasAtributo.selectedIndexes()[0]
+        peli = index.data()
+        
+        idPeli = self.df_movies[self.df_movies["title"] == peli]["movieId"]
+        idPeliBuscador = str(int(self.df_links[self.df_links["movieId"]==int(idPeli)]["tmdbId"]))
+        webbrowser.open("www.themoviedb.org/movie/" + idPeliBuscador)
 
     # Funcin que recomienda N peliculas en base a los atributos de esta
     def recomendarNPeliculasPorAtributos(self):
@@ -246,6 +271,7 @@ class MainWindow(QMainWindow):
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
                         self.ui.tableViewPeliculasAtributo.setModel(model)
+                        self.ui.tableViewPeliculasAtributo.clicked.connect(self.mirarPelisPorAtributos)
 
                     if self.ui.checkBoxTagsAtributos.isChecked():
 
@@ -257,6 +283,7 @@ class MainWindow(QMainWindow):
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
                         self.ui.tableViewPeliculasAtributo.setModel(model)
+                        self.ui.tableViewPeliculasAtributo.clicked.connect(self.mirarPelisPorAtributos)
 
                     if self.ui.checkBoxSinopsisAtributos.isChecked():
 
@@ -266,6 +293,7 @@ class MainWindow(QMainWindow):
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
                         self.ui.tableViewPeliculasAtributo.setModel(model)
+                        self.ui.tableViewPeliculasAtributo.clicked.connect(self.mirarPelisPorAtributos)
 
                 else:
                     self.mensaje_error("No se ha encontrado la pelicula introducida")
@@ -338,6 +366,14 @@ class MainWindow(QMainWindow):
 
 
 
+    def mirarPelisUserUser(self):
+        index = self.ui.tableViewUserUser.selectedIndexes()[0]
+        peli = index.data()
+         
+        idPeli = self.df_movies[self.df_movies["title"] == peli]["movieId"]
+        idPeliBuscador = str(int(self.df_links[self.df_links["movieId"]==int(idPeli)]["tmdbId"]))
+        webbrowser.open("www.themoviedb.org/movie/" + idPeliBuscador)
+        
     # Función que recomienda películas a un usuario basandose en otros usuarios
     def recomendarNPeliculasUserUser(self):
 
@@ -378,6 +414,7 @@ class MainWindow(QMainWindow):
 
                     model = pandas_table.DataFrameModel(df_peliculasRecomendadas)
                     self.ui.tableViewUserUser.setModel(model)
+                    self.ui.tableViewUserUser.clicked.connect(self.mirarPelisUserUser)
 
 
                 else:
