@@ -62,10 +62,10 @@ class Tags():
         movie_list = [(index, similarity) for index, similarity in enumerate(similarities)]
         movie_list.sort(key=lambda x: x[1], reverse=True)
 
-        print(n_similares)
+
         if(n_similares>len(movie_list)):
             n_similares=len(movie_list)-1
-        print(n_similares)
+
         bandera=False
         listaPeliculasMostrar = []
         contador = 1

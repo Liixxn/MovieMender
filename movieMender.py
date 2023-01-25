@@ -1,4 +1,6 @@
 import sys
+from datetime import datetime, time
+
 from PyQt5.QtWidgets import QMessageBox
 import pandas as pd
 #import surprise
@@ -103,6 +105,11 @@ class MainWindow(QMainWindow):
 
         self.df_usuaarioO = pd.read_csv('csv/Usuario_0.csv', sep=';')
 
+        for usuario_nuevo in range(len(self.df_usuaarioO["movieId"])):
+            self.df_usuaarioO["userId"] = 0
+            self.df_usuaarioO["timestamp"] = datetime.now()
+
+
         self.df_movies = pd.read_csv('csv/movies.csv')
         # Carga del dataframe de las peliculas con su sinopsis
         self.df_moviesSinopsis = pd.concat([self.df_movies, self.df_sinopsis], axis=1)
@@ -127,6 +134,10 @@ class MainWindow(QMainWindow):
         self.df_ratings = self.df_ratings.dropna()
         self.df_tags = pd.read_csv('csv/tags.csv')
         self.df_tags = self.df_tags.dropna()
+
+
+        self.df_ratings = pd.concat([self.df_usuaarioO, self.df_ratings], axis=0)
+
         self.df_movies_ratings = self.df_ratings.merge(self.df_movies)[
             ['userId', 'movieId', 'title', 'rating', 'genres']]
 
@@ -174,7 +185,7 @@ class MainWindow(QMainWindow):
 
     def mirarPelisPorUsuario(self):
         index = self.ui.tableViewPeliculasUser.selectedIndexes()[0]
-        print(index)
+
         peli = index.data()
         
         idPeli = self.df_movies[self.df_movies["title"] == peli]["movieId"]
@@ -219,7 +230,7 @@ class MainWindow(QMainWindow):
                     if self.ui.checkBoxSinopsisRecomendacionUsuarios.isChecked():
 
                         listaPeliculasSinopsis = []
-                        listaPeliculasSinopsis = self.procesoSinopsis.recomendarNPeliculasNoVistasSinopsis(self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText(), self.df_moviesSinopsis)
+                        listaPeliculasSinopsis = self.procesoSinopsis.recomendarNPeliculasNoVistasSinopsis(self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText(), self.df_moviesSinopsis, self.df_ratings)
                         df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
                         df_listaPeliculasSinopsis["Peliculas"] = listaPeliculasSinopsis
 
@@ -339,7 +350,7 @@ class MainWindow(QMainWindow):
                                 self.ui.lblnotaPrediccionPelicula.setText(str(ratingPelicula))
 
                         if self.ui.checkBoxSinopsisPrediccion.isChecked():
-                            prediccionSinopsis = self.procesoSinopsis.predecirRatingUsuarioSinopsis(self.ui.comboBoxUsuarioRating.currentText(), self.ui.comboBoxPeliculaRating.currentText(), self.df_moviesSinopsis)
+                            prediccionSinopsis = self.procesoSinopsis.predecirRatingUsuarioSinopsis(self.ui.comboBoxUsuarioRating.currentText(), self.ui.comboBoxPeliculaRating.currentText(), self.df_moviesSinopsis, self.df_ratings)
                             self.ui.lblPeliculaPrediccion.setText("La predicción para la película " + titulo_pelicula + " es: ")
                             self.ui.lblnotaPrediccionPelicula.setText(str(prediccionSinopsis))
 

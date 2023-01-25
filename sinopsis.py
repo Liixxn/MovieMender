@@ -122,13 +122,13 @@ class procesamientoTexto():
 
 
 
-    def predecirRatingUsuarioSinopsis(self, user_id, titulo_pelicula, df_peliculasConSinopsis):
+    def predecirRatingUsuarioSinopsis(self, user_id, titulo_pelicula, df_peliculasConSinopsis, df_ratingsUsuarios):
 
         user_id = int(user_id)
 
-        df_ratingsUsuarios = pd.read_csv('csv/ratings.csv')
         # Se comrpueba que el usuario exista
         selected_user = df_ratingsUsuarios[df_ratingsUsuarios["userId"] == user_id]
+
         # Se comprueba que la pelicula exista
         if len(df_peliculasConSinopsis[df_peliculasConSinopsis["title"] == titulo_pelicula]) != 0:
             selected_movie = df_peliculasConSinopsis[df_peliculasConSinopsis["title"] == titulo_pelicula]
@@ -180,9 +180,7 @@ class procesamientoTexto():
             mensaje_error("La pelicula que desea predecir no contiene una sinopsis en que basarse")
 
 
-    def recomendarNPeliculasNoVistasSinopsis(self, user_id, n_peliculas, df_peliculasConSinopsis):
-
-        df_users_ratings = pd.read_csv('csv/ratings.csv')
+    def recomendarNPeliculasNoVistasSinopsis(self, user_id, n_peliculas, df_peliculasConSinopsis, df_users_ratings):
 
         user_id = int(user_id)
         n_peliculas = int(n_peliculas)
