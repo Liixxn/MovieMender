@@ -1,5 +1,5 @@
 import sys
-import tkinter.messagebox
+from PyQt5.QtWidgets import QMessageBox
 
 import requests
 import pandas as pd
@@ -108,7 +108,7 @@ class MainWindow(QMainWindow):
         # extract.escribirSinopsisFichero()
         self.df_sinopsis = extract.cargarFicheroSinopsisDataframe()
 
-        self.df_usuaarioO = pd.read_csv('csv/Usuario_0.csv')
+        self.df_usuaarioO = pd.read_csv('csv/Usuario_0.csv', sep=';')
 
         self.df_movies = pd.read_csv('csv/movies.csv')
         # Carga del dataframe de las peliculas con su sinopsis
@@ -142,6 +142,20 @@ class MainWindow(QMainWindow):
         return listaUsuariosId
 
 
+    ####################################################################################################
+    
+    # Mensajes por pantalla
+    
+    ####################################################################################################
+
+    def mensaje_error(self, mensaje):
+        QMessageBox.critical(
+            self,
+            "Error",
+            mensaje,
+            buttons=QMessageBox.Discard,
+            defaultButton=QMessageBox.Discard,
+        )
 
     ####################################################################################################
 
@@ -165,11 +179,11 @@ class MainWindow(QMainWindow):
                     if self.ui.checkBoxSinopsisRecomendacionUsuarios.isChecked():
                         print("Sinopsis")
                 else:
-                    tkinter.messagebox.showerror("Error", "El usuario introducido no existe")
+                    self.mensaje_error("El usuario introducido no existe")
             else:
-                tkinter.messagebox.showerror("Error", "Introduzca un formato válido de usuario o número de recomendaciones")
+                self.mensaje_error("Introduzca un formato válido de usuario o número de recomendaciones")
         else:
-            tkinter.messagebox.showerror("Error", "Rellene los campos necesarios")
+            self.mensaje_error("Rellene los campos necesarios")
 
 
 
@@ -191,12 +205,12 @@ class MainWindow(QMainWindow):
                 if encontrado == True:
                     self.ui.lblPeliculaSeleccionadaAtributos.setText(titulo_pelicula)
                 else:
-                    tkinter.messagebox.showerror("Error", "No se ha encontrado la pelicula introducida")
+                    self.mensaje_error("No se ha encontrado la pelicula introducida")
 
             else:
-                tkinter.messagebox.showerror("Error", "Introduzca un número válido de recomendaciones")
+                self.mensaje_error("Introduzca un número válido de recomendaciones")
         else:
-            tkinter.messagebox.showerror("Error", "Rellene los campos necesarios")
+            self.mensaje_error("Rellene los campos necesarios")
 
 
 
@@ -231,13 +245,13 @@ class MainWindow(QMainWindow):
                             print("Tags")
 
                     else:
-                        tkinter.messagebox.showerror("Error", "No se ha encontrado la pelicula introducida")
+                       self.mensaje_error("No se ha encontrado la pelicula introducida")
                 else:
-                    tkinter.messagebox.showerror("Error", "El usuario introducido no existe")
+                    self.mensaje_error("El usuario introducido no existe")
             else:
-                tkinter.messagebox.showerror("Error", "Introduzca un número válido de usuario")
+                self.mensaje_error("Introduzca un número válido de usuario")
         else:
-            tkinter.messagebox.showerror("Error", "Rellene los campos necesarios")
+            self.mensaje_error("Rellene los campos necesarios")
 
 
 
@@ -259,12 +273,12 @@ class MainWindow(QMainWindow):
                 if encontrado == True:
                     self.ui.lblPeliculaSeleccionadaUserUser.setText(titulo_pelicula)
                 else:
-                    tkinter.messagebox.showerror("Error", "No se ha encontrado la pelicula introducida")
+                    self.mensaje_error("No se ha encontrado la pelicula introducida")
 
             else:
-                tkinter.messagebox.showerror("Error", "Introduzca un número válido de recomendaciones")
+                self.mensaje_error("Introduzca un número válido de recomendaciones")
         else:
-            tkinter.messagebox.showerror("Error", "Rellene los campos necesarios")
+            self.mensaje_error("Rellene los campos necesarios")
 
 
 
