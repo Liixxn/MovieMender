@@ -27,8 +27,9 @@ from index_ui import Ui_MainWindow
 
 
 import webScraping
+import sinopsis
+import pandas_table
 import generos
-
 
 
 
@@ -109,11 +110,29 @@ class MainWindow(QMainWindow):
         # extract.escribirSinopsisFichero()
         self.df_sinopsis = extract.cargarFicheroSinopsisDataframe()
 
+        self.df_peliculasConSinopsis = self.df_sinopsis[self.df_sinopsis["sinopsis"] != "Sin Informacion"]
+        self.df_peliculasConSinopsis = self.df_peliculasConSinopsis.reset_index()
+
+
         self.df_usuaarioO = pd.read_csv('csv/Usuario_0.csv', sep=';')
 
         self.df_movies = pd.read_csv('csv/movies.csv')
         # Carga del dataframe de las peliculas con su sinopsis
         self.df_moviesSinopsis = pd.concat([self.df_movies, self.df_sinopsis], axis=1)
+
+
+
+        self.procesoSinopsis = sinopsis.procesamientoTexto()
+        self.procesoSinopsis.tratamientoBasico(self.df_peliculasConSinopsis)
+        self.procesoSinopsis.quit_stopwords(self.df_peliculasConSinopsis)
+        self.procesoSinopsis.stemming(self.df_peliculasConSinopsis)
+        self.procesoSinopsis.prepararSinopsisTfidf(self.df_peliculasConSinopsis)
+
+        self.df_peliculasConSinopsis.drop('index', inplace=True, axis=1)
+
+
+
+
 
         self.df_movies = self.df_movies.dropna()
         self.df_ratings = pd.read_csv('csv/ratings.csv')
@@ -166,21 +185,30 @@ class MainWindow(QMainWindow):
 
 
     def recomendarNPeliculasPorUsuario(self):
-        
+
         if self.ui.comboBoxUsuario.currentText() != "" and self.ui.comboBoxRecomendacionUsuarios.currentText() != "" and (self.ui.checkBoxGenerosRecomendacionUsuarios.isChecked() or self.ui.checkBoxTagsRecomendacionUsuarios.isChecked() or self.ui.checkBoxSinopsisRecomendacionUsuarios.isChecked()):
             if self.ui.comboBoxUsuario.currentText().isdigit() and self.ui.comboBoxRecomendacionUsuarios.currentText().isdigit():
 
                 listaUsuarios = self.cambiarUserIdString()
+
                 if self.ui.comboBoxUsuario.currentText() in listaUsuarios:
                     self.ui.lblusuarioSeleccionado.setText(self.ui.comboBoxUsuario.currentText())
                     if self.ui.checkBoxGenerosRecomendacionUsuarios.isChecked():
                         print("Generos")
                         genero = generos.Generos()
-                        peliculasRecomendadas = genero.recomendacionEnBaseGeneroPelisQueNoHaVistoUsuario(self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText())
+                        peliculasRecomendadas = genero.recomendacionEnBaseGeneroPelisQueNoHaVistoUsuario(
+                            self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText())
                     if self.ui.checkBoxTagsRecomendacionUsuarios.isChecked():
                         print("Tags")
                     if self.ui.checkBoxSinopsisRecomendacionUsuarios.isChecked():
-                        print("Sinopsis")
+
+                        listaPeliculasSinopsis = []
+                        listaPeliculasSinopsis = self.procesoSinopsis.recomendarNPeliculasNoVistasSinopsis(self.ui.comboBoxUsuario.currentText(), self.ui.comboBoxRecomendacionUsuarios.currentText(), self.df_moviesSinopsis)
+                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
+                        df_listaPeliculasSinopsis["Peliculas"] = listaPeliculasSinopsis
+
+                        model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
+                        self.ui.tableViewPeliculasUser.setModel(model)
                 else:
                     self.mensaje_error("El usuario introducido no existe")
             else:
@@ -208,7 +236,8 @@ class MainWindow(QMainWindow):
                 if encontrado == True:
                     self.ui.lblPeliculaSeleccionadaAtributos.setText(titulo_pelicula)
                     genero = generos.Generos()
-                    peliculasRecomendadas = genero.recomedacionPorGenero(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
+                    peliculasRecomendadas = genero.recomedacionPorGenero(titulo_pelicula,
+                                                                         self.ui.comboBoxNPeliculasAtributos.currentText())
                 else:
                     self.mensaje_error("No se ha encontrado la pelicula introducida")
 
@@ -245,10 +274,12 @@ class MainWindow(QMainWindow):
                         if self.ui.checkBoxGenerosPrediccion.isChecked():
                             print("Generos")
                             genero = generos.Generos()
-                            ratingPelicula = genero.predecirRatingDeUserAPeliculaPorSusGeneros(titulo_pelicula, self.ui.comboBoxUsuarioRating.currentText())
-                            print(ratingPelicula)
+                            ratingPelicula = genero.predecirRatingDeUserAPeliculaPorSusGeneros(titulo_pelicula,
+                                                                                               self.ui.comboBoxUsuarioRating.currentText())
                         if self.ui.checkBoxSinopsisPrediccion.isChecked():
-                            print("Sinopsis")
+                            prediccionSinopsis = self.procesoSinopsis.predecirRatingUsuarioSinopsis(self.ui.comboBoxUsuarioRating.currentText(), self.ui.comboBoxPeliculaRating.currentText(), self.df_moviesSinopsis)
+                            self.ui.lblPeliculaPrediccion.setText("La predicción para la película " + titulo_pelicula + " es: ")
+                            self.ui.lblnotaPrediccionPelicula.setText(str(prediccionSinopsis))
                         if self.ui.checkBoxTagsPrediccion.isChecked():
                             print("Tags")
 
