@@ -72,6 +72,8 @@ class Generos:
         #y por lo tanto hay que añadir uno mas para llegar al numero deseado por el usuario
         listaPeliculasMostrar = []
         bandera=False
+        if(n_similares>len(self.df_movies)):
+            n_similares=len(self.df_movies)-1
         for movie in movie_list[0:n_similares]:
             if(nombrePelicula != self.df_movies.iloc[movie[0]]["title"]):
                 listaPeliculasMostrar.append(self.df_movies.iloc[movie[0]]["title"])
