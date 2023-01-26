@@ -104,6 +104,7 @@ class MainWindow(QMainWindow):
 
 
         self.df_usuaarioO = pd.read_csv('csv/Usuario_0.csv', sep=';')
+        self.df_usuaarioO = self.df_usuaarioO.drop(columns=["title"])
 
         for usuario_nuevo in range(len(self.df_usuaarioO["movieId"])):
             self.df_usuaarioO["userId"] = 0
@@ -135,7 +136,8 @@ class MainWindow(QMainWindow):
         self.df_tags = pd.read_csv('csv/tags.csv')
         self.df_tags = self.df_tags.dropna()
 
-        #self.df_ratings = pd.concat([self.df_usuaarioO, self.df_ratings], axis=0)
+        self.df_ratings = pd.concat([self.df_usuaarioO, self.df_ratings], axis=0)
+
 
 
         self.df_movies_ratings = self.df_ratings.merge(self.df_movies)[
@@ -276,10 +278,11 @@ class MainWindow(QMainWindow):
                     if self.ui.checkBoxGenerosAtributos.isChecked():
 
                         genero = generos.Generos()
-                        peliculasRecomendadas = genero.recomedacionPorGenero(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
+                        peliculasRecomendadas, similarities = genero.recomedacionPorGenero(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
 
-                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
+                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas", "Similarity"])
                         df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadas
+                        df_listaPeliculasSinopsis["Similarity"] = similarities
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
                         self.ui.tableViewPeliculasAtributo.setModel(model)
@@ -299,9 +302,10 @@ class MainWindow(QMainWindow):
 
                     if self.ui.checkBoxSinopsisAtributos.isChecked():
 
-                        peliculasRecomendadasSinopsis = self.procesoSinopsis.recomendarPeliculasSinopsis(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText(), self.df_moviesSinopsis)
-                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
+                        peliculasRecomendadasSinopsis, similarities = self.procesoSinopsis.recomendarPeliculasSinopsis(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText(), self.df_moviesSinopsis)
+                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas", "Similarity"])
                         df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadasSinopsis
+                        df_listaPeliculasSinopsis["Similarity"] = similarities
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
                         self.ui.tableViewPeliculasAtributo.setModel(model)
@@ -346,6 +350,7 @@ class MainWindow(QMainWindow):
                             ratingPelicula = genero.predecirRatingDeUserAPeliculaPorSusGeneros(titulo_pelicula, self.ui.comboBoxUsuarioRating.currentText())
                             if ratingPelicula == "Vacio":
                                 self.ui.lblPeliculaPrediccion.setText("No se ha podido predecir el rating para la película " + titulo_pelicula + " porque no tiene géneros")
+                                self.ui.lblnotaPrediccionPelicula.setText("")
                             else:
                                 self.ui.lblPeliculaPrediccion.setText("La predicción para la película " + titulo_pelicula + " es: ")
                                 self.ui.lblnotaPrediccionPelicula.setText(str(ratingPelicula))
@@ -362,6 +367,7 @@ class MainWindow(QMainWindow):
                             if ratingPelicula == "Vacio":
                                 self.ui.lblPeliculaPrediccion.setText(
                                     "No se ha podido predecir el rating para la película " + titulo_pelicula + " porque no tiene géneros")
+                                self.ui.lblnotaPrediccionPelicula.setText("")
                             else:
                                 self.ui.lblPeliculaPrediccion.setText(
                                     "La predicción para la película " + titulo_pelicula + " es: ")

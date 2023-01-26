@@ -109,6 +109,11 @@ class procesamientoTexto():
         selected_movie_index = selected_movie.index[0]
         # Se obtienen los puntuajes de las similitudes entre las peliculas ordenados de mayor a menor
         similarity_scores = pd.Series(cos_sim[selected_movie_index]).sort_values(ascending=False)
+
+        listaSimilar = []
+        for i in similarity_scores[1:n_similares+1]:
+            listaSimilar.append(i)
+
         # Se escogen el numero de peliculas especificadas
         numero_peliculas = list(similarity_scores.iloc[1:n_similares + 1].index)
 
@@ -117,7 +122,7 @@ class procesamientoTexto():
             recommended_movies.append(df_peliculasConSinopsis.loc[i]["title"])
 
 
-        return recommended_movies
+        return recommended_movies, listaSimilar
 
 
 

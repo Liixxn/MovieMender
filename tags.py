@@ -13,7 +13,7 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize, RegexpTokenizer
 from nltk.stem import SnowballStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
-
+from datetime import datetime, time
 
 
 
@@ -25,6 +25,14 @@ class Tags():
 
     def cargaDocumentos(self):
         self.df_usuaarioO = pd.read_csv('csv/Usuario_0.csv', sep=';')
+
+        self.df_usuaarioO = self.df_usuaarioO.drop(columns=["title"])
+
+        for usuario_nuevo in range(len(self.df_usuaarioO["movieId"])):
+            self.df_usuaarioO["userId"] = 0
+            self.df_usuaarioO["timestamp"] = datetime.now()
+
+
         self.df_movies = pd.read_csv('csv/movies.csv')
 
         self.df_movies = self.df_movies.dropna()
@@ -32,6 +40,20 @@ class Tags():
         self.df_ratings = self.df_ratings.dropna()
         self.df_tags = pd.read_csv('csv/tags.csv')
         self.df_tags = self.df_tags.dropna()
+
+        self.df_movies_ratings_old = self.df_ratings.merge(self.df_movies)[
+            ['userId', 'movieId', 'title', 'rating', 'genres']]
+
+        self.df_movies_ratings_tags_old = pd.merge(self.df_movies_ratings_old, self.df_tags, how='outer')[
+            ['userId', 'movieId', 'title', 'rating', 'genres', 'tag']]
+        self.df_movies_ratings_tags_old["tag"] = self.df_movies_ratings_tags_old["tag"].str.lower()
+
+
+
+
+
+        self.df_ratings = pd.concat([self.df_usuaarioO, self.df_ratings], axis=0)
+
         self.df_movies_ratings = self.df_ratings.merge(self.df_movies)[
             ['userId', 'movieId', 'title', 'rating', 'genres']]
 
@@ -46,40 +68,42 @@ class Tags():
 
 
     def recomedacionPorTags(self, nombrePelicula, n_similares):
-        n_similares=int(n_similares)
-        count_matrix = self.df_movies_ratings_tags.pivot_table(index='movieId', columns='tag', values='userId')
-        #count_matrix = self.df_movies_ratings_tags.pivot_table(index='movieId', columns='tag', values='rating')
-        count_matrix.fillna(0, inplace=True)
-        sparse_rating = sp.sparse.csr_matrix(count_matrix)
-        selected_movie = self.df_movies[self.df_movies["title"] == nombrePelicula]["movieId"].values[0]
-
-
-        #encontramos el id de la pelicula en la matriz
-        selected_movie_index = count_matrix.index.get_loc(selected_movie)
-
-        similarities = cosine_similarity(sparse_rating, sparse_rating[selected_movie_index])
-
-        movie_list = [(index, similarity) for index, similarity in enumerate(similarities)]
-        movie_list.sort(key=lambda x: x[1], reverse=True)
-
-
-        if(n_similares>len(movie_list)):
-            n_similares=len(movie_list)-1
-
-        bandera=False
         listaPeliculasMostrar = []
-        contador = 1
-        for movie in movie_list[0:n_similares]:
-            if(nombrePelicula != self.df_movies.iloc[movie[0]]["title"]):
+        try:
+            n_similares=int(n_similares)
+            count_matrix = self.df_movies_ratings_tags.pivot_table(index='movieId', columns='tag', values='userId')
+            #count_matrix = self.df_movies_ratings_tags.pivot_table(index='movieId', columns='tag', values='rating')
+            count_matrix.fillna(0, inplace=True)
+            sparse_rating = sp.sparse.csr_matrix(count_matrix)
+            selected_movie = self.df_movies[self.df_movies["title"] == nombrePelicula]["movieId"].values[0]
+            #encontramos el id de la pelicula en la matriz
+            selected_movie_index = count_matrix.index.get_loc(selected_movie)
 
-                listaPeliculasMostrar.append(self.df_movies.iloc[movie[0]]["title"])
-                contador+=1
-            else:
-                bandera=True
-        if(bandera):
-            mov=movie_list[n_similares][0]
+            similarities = cosine_similarity(sparse_rating, sparse_rating[selected_movie_index])
 
-            listaPeliculasMostrar.append(self.df_movies.iloc[mov]["title"])
+            movie_list = [(index, similarity) for index, similarity in enumerate(similarities)]
+            movie_list.sort(key=lambda x: x[1], reverse=True)
+
+
+            if(n_similares>len(movie_list)):
+                n_similares=len(movie_list)-1
+
+            bandera=False
+
+            contador = 1
+            for movie in movie_list[0:n_similares]:
+                if(nombrePelicula != self.df_movies.iloc[movie[0]]["title"]):
+
+                    listaPeliculasMostrar.append(self.df_movies.iloc[movie[0]]["title"])
+                    contador+=1
+                else:
+                    bandera=True
+            if(bandera):
+                mov=movie_list[n_similares][0]
+
+                listaPeliculasMostrar.append(self.df_movies.iloc[mov]["title"])
+        except Exception as e:
+            print("")
         return listaPeliculasMostrar
                 
     def predecirRatingDeUserAPeliculaPorSusTags(self, nombrePelicula, user_id):

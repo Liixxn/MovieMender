@@ -15,6 +15,7 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize, RegexpTokenizer
 from nltk.stem import SnowballStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from datetime import datetime, time
 
 import movieMender
 
@@ -26,6 +27,12 @@ class Generos:
         
     def cargaDocumentos(self):
         self.df_usuaarioO = pd.read_csv('csv/Usuario_0.csv', sep=';')
+        self.df_usuaarioO = self.df_usuaarioO.drop(columns=["title"])
+
+        for usuario_nuevo in range(len(self.df_usuaarioO["movieId"])):
+            self.df_usuaarioO["userId"] = 0
+            self.df_usuaarioO["timestamp"] = datetime.now()
+
 
         self.df_movies = pd.read_csv('csv/movies.csv')
         # Carga del dataframe de las peliculas con su sinopsis
@@ -36,6 +43,9 @@ class Generos:
         self.df_ratings = self.df_ratings.dropna()
         self.df_tags = pd.read_csv('csv/tags.csv')
         self.df_tags = self.df_tags.dropna()
+
+        self.df_ratings = pd.concat([self.df_usuaarioO, self.df_ratings], axis=0)
+
         self.df_movies_ratings = self.df_ratings.merge(self.df_movies)[
             ['userId', 'movieId', 'title', 'rating', 'genres']]
 
@@ -62,9 +72,15 @@ class Generos:
         selected_movie_index = selected_movie.index[0]
         #sacamos las similitudes de los generos
         similarities = cosine_similarity(genre_matrix[selected_movie_index:selected_movie_index+1], genre_matrix).flatten()
+
         #las metemos en una tupla y las ordenamos de mayor a menor 
         movie_list = [(index, similarity) for index, similarity in enumerate(similarities)]
         movie_list.sort(key=lambda x: x[1], reverse=True)
+
+        listaSimilar = []
+        for i in movie_list[0:n_similares]:
+            listaSimilar.append(i)
+
 
         #la bandera nos sirve para saltarnos la propia peli que buscamos
         #siempre esta a false y si nos encontramos la peli que estamos buscando la activamos a True
@@ -84,7 +100,8 @@ class Generos:
 
             mov=movie_list[n_similares][0]
             listaPeliculasMostrar.append(self.df_movies.iloc[mov]["title"])
-        return listaPeliculasMostrar
+
+        return listaPeliculasMostrar, listaSimilar
                 
     def predecirRatingDeUserAPeliculaPorSusGeneros(self, nombrePelicula, user_id):
         user_id=int(user_id)
