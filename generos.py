@@ -101,7 +101,7 @@ class Generos:
             mov=movie_list[n_similares][0]
             listaPeliculasMostrar.append(self.df_movies.iloc[mov]["title"])
 
-        return listaPeliculasMostrar, listaSimilar
+        return listaPeliculasMostrar #listaSimilar
                 
     def predecirRatingDeUserAPeliculaPorSusGeneros(self, nombrePelicula, user_id):
         user_id=int(user_id)
