@@ -30,6 +30,6 @@ La aplicación está desarrollada en Python y se han obtenido los datos de Movie
 
 <img align="center" src="https://github.com/Liixxn/MovieMender/blob/main/imgs/recomendacionSinopsis.png" alt="Recomendación Atributo" width="60%" height="60%"/>
 
-<p>MovieMender también ofrece la posibilidad de visualizar la información de la película que seleccione de la tabla de resultados, a través del sitio web <a href=""https://www.themoviedb.org>TMDB</a>.</p>
+<p>MovieMender también ofrece la posibilidad de visualizar la información de la película que seleccione de la tabla de resultados, a través del sitio web <a href="https://www.themoviedb.org>TMDB"</a>.</p>
 
 <img align="center" src="https://github.com/Liixxn/MovieMender/blob/main/imgs/ToyStory.png" alt="Película en TMDB" width="60%" height="60%"/>
