@@ -5,6 +5,8 @@ Hoy en día los sistemas de recomendación se encuentran en cualquier parte. Est
 
 Por ello se crea la aplicación <b>MovieMender</b>, un programa diseñado para proporcionar a los usuarios, recomendaciones de películas que no hayan visto, ofreciendo distintas posibilidades a la hora de escoger el método de estas. Además de brindar una predicción de nota, a una cierta película ofrecida, teniendo en cuenta los gustos del usuario. 
 
+La aplicación está desarrollada en Python y se han obtenido los datos de Movielens. Cuenta con una interfaz gráfica para que le resulte más fácil y atractivo al usuario interactuar con ella.
+
 
 <b><u>Lenguajes y herramientas utilizadas</u></b>
 
