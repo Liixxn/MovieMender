@@ -1,0 +1,28 @@
+
+    #MainWindow {
+		background-color: #fff;
+	}
+
+	#menu {
+	    background-color: #EC6433;
+
+	}
+	#btnRecomendarPorUsuario, #btnRecomendarPorAtributo, #btnPrediccionRating, #btnRecomendarUserUser {
+        background-color: #EC6433;
+        color: black;
+        border: none;
+        padding-top: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
+	}
+
+	#btnRecomendarPorUsuario:hover, #btnRecomendarPorAtributo:hover, #btnPrediccionRating:hover, #btnRecomendarUserUser:hover {
+        background-color: #FFAC33;
+
+	}
+
+	#btnRecomendarPorUsuario:checked, #btnRecomendarPorAtributo:checked, #btnPrediccionRating:checked, #btnRecomendarUserUser:checked {
+		color: #fff;
+		border-bottom: 2px solid #fff;
+	}
+
