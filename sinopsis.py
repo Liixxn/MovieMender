@@ -122,7 +122,7 @@ class procesamientoTexto():
             recommended_movies.append(df_peliculasConSinopsis.loc[i]["title"])
 
 
-        return recommended_movies, listaSimilar
+        return recommended_movies #listaSimilar
 
 
 

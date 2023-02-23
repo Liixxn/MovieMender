@@ -278,11 +278,10 @@ class MainWindow(QMainWindow):
                     if self.ui.checkBoxGenerosAtributos.isChecked():
 
                         genero = generos.Generos()
-                        peliculasRecomendadas, similarities = genero.recomedacionPorGenero(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
+                        peliculasRecomendadas= genero.recomedacionPorGenero(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText())
 
-                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas", "Similarity"])
+                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
                         df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadas
-                        df_listaPeliculasSinopsis["Similarity"] = similarities
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
                         self.ui.tableViewPeliculasAtributo.setModel(model)
@@ -302,10 +301,10 @@ class MainWindow(QMainWindow):
 
                     if self.ui.checkBoxSinopsisAtributos.isChecked():
 
-                        peliculasRecomendadasSinopsis, similarities = self.procesoSinopsis.recomendarPeliculasSinopsis(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText(), self.df_moviesSinopsis)
-                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas", "Similarity"])
+                        peliculasRecomendadasSinopsis = self.procesoSinopsis.recomendarPeliculasSinopsis(titulo_pelicula, self.ui.comboBoxNPeliculasAtributos.currentText(), self.df_moviesSinopsis)
+                        df_listaPeliculasSinopsis = pd.DataFrame(columns=["Peliculas"])
                         df_listaPeliculasSinopsis["Peliculas"] = peliculasRecomendadasSinopsis
-                        df_listaPeliculasSinopsis["Similarity"] = similarities
+                        #df_listaPeliculasSinopsis["Similarity"] = similarities
 
                         model = pandas_table.DataFrameModel(df_listaPeliculasSinopsis)
                         self.ui.tableViewPeliculasAtributo.setModel(model)
