@@ -7,6 +7,23 @@ Por ello se crea la aplicación <b>MovieMender</b>, un programa diseñado para p
 
 La aplicación está desarrollada en Python y se han obtenido los datos de Movielens. Cuenta con una interfaz gráfica para que le resulte más fácil y atractivo al usuario interactuar con ella.
 
+Quick start
+-----------
+Para poder ejecutar MovieMender se necesita tener instalado 'pip'. En el caso de no tenerlo introduzca el siguiente comando:
+```
+python get-pip.py
+```
+
+Instalación de requirements.txt:
+-----------
+MovieMender trabaja con diferentes librerías que se encuentra en el fichero <i>requirements.txt</i>. Abra una línea de comandos en el entorno virtual, sitúese en el directorio en el que se encuentra el proyecto y ejecute el siguiente comando:
+```
+pip install -r requirements.txt
+```
+
+Tras la finalización de las diversas instalaciones, solo tiene que ejecutar el fichero principal <b>movieMender.py</b> y ya podrá disfrutar de todas las funcionalidades que ofrece la aplicación.
+
+<hr>
 
 <b><u>Lenguajes y herramientas utilizadas</u></b>
 
