@@ -18,3 +18,16 @@ La aplicación está desarrollada en Python y se han obtenido los datos de Movie
 <a href="https://riverbankcomputing.com/software/pyqt/intro" target="_blank" rel="noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e6/Python_and_Qt.svg" alt="PyQt" width="40" height="40"/> </a>
 <a href="https://jupyter.org" target="_blank" rel="noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Jupyter_logo.svg" alt="Jupyter Notebook" width="40" height="40"/> </a>
 <a href="https://www.jetbrains.com/es-es/pycharm/" target="_blank" rel="noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/1/1d/PyCharm_Icon.svg" alt="PyCharm" width="40" height="40"/> </a>
+<a href="https://code.visualstudio.com" target="_blank" rel="noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg" alt="Visual Studio Code" width="40" height="40"/> </a>
+
+<hr>
+
+<h3>Ventana Principal de MovieMender</h3>
+
+<img align="center" src="https://github.com/Liixxn/MovieMender/blob/main/imgs/moviemender-principal.png" alt="MovieMender principal" width="60%" height="60%"/>
+
+<h3>Recomendación de varias películas por sus atributos </h3>
+
+<img align="center" src="https://github.com/Liixxn/MovieMender/blob/main/imgs/recomendacionSinopsis.png" alt="Recomendación Atributo" width="60%" height="60%"/>
+
+
